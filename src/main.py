@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Planets,People
 #from models import Person
 
 app = Flask(__name__)
@@ -21,9 +21,26 @@ CORS(app)
 setup_admin(app)
 
 # Handle/serialize errors like a JSON object
-@app.errorhandler(APIException)
-def handle_invalid_usage(error):
-    return jsonify(error.to_dict()), error.status_code
+@app.route("/people", methods=['GET',])
+def all_people():
+    people = People.get_all()
+    people_dic = []
+    for person in people :
+        people_dic.append(person.serialize())
+    return jsonify(people_dic)
+
+@app.route("/people/<int:people_id>", methods=['GET',])
+def all_people():
+    json = request.get_json()
+    people = People()
+    people.set_with_json(json)
+    people.db_post()
+    return jsonify(people.serialize())
+
+
+# @app.errorhandler(APIException)
+# def handle_invalid_usage(error):
+#     return jsonify(error.to_dict()), error.status_code
 
 # generate sitemap with all your endpoints
 @app.route('/')
