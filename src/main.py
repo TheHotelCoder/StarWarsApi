@@ -29,22 +29,13 @@ def get_all_people():
     for person in people :
         people_dic.append(person.serialize())
     return jsonify(people_dic)
-
-@app.route("/people",methods=['POST'])
-def create_person ():
-    json = request.get_json()
-    people = People()
-    people.set_with_json(json)
-    people.db_post()
-    return jsonify(people.serialize())
-
+    
 @app.route("/people/<int:person_id>", methods=['GET'])
 def person_by_id(person_id):
     people = People.get__by_id(person_id)
     people_serialized = people.serialized()
     return jsonify(people_serialized)
-
-
+    
 @app.route("/planets", methods=["GET"])
 def get_all_planets():
     planets = Planets.get_all()
@@ -53,38 +44,32 @@ def get_all_planets():
         planets_dic.append(planet.serialize())
     return jsonify(planets_dic)
 
-@app.route("/planets",methods=['POST'])
-def create_planet():
-    json = request.get_json()
-    planets = Planets()
-    planets.set_with_json(json)
-    planets.db_post()
-    return jsonify(planets.serialize())
-
 @app.route("/planets/<int:planet_id>", methods=['GET'])
 def planet_by_id(planet_id):
     planet = Planets.get_by_id(planet_id)
     planet_serialized = planet.serialized()
     return jsonify(planet_serialized) 
 
+#GET USERS AND GET USERS FAVORITES
 
-# @app.errorhandler(APIException)
-# def handle_invalid_usage(error):
-#     return jsonify(error.to_dict()), error.status_code
+#Post favorire planet by id and favrotie people
 
-# generate sitemap with all your endpoints
-@app.route('/')
-def sitemap():
-    return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
+@app.route("/people",methods=['POST'])
+def create_person ():
+    print(request.json)
+    json = request.get_json()
+    people = People()
+    people.set_with_json(json)
+    people.db_post()
+    return jsonify(people.serialize())
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
-
-    return jsonify(response_body), 200
+@app.route("/planets",methods=['POST'])
+def create_planet():
+    planets = Planets()
+    planets.set_with_json(json)
+    planets.db_post()
+    return jsonify(planets.serialize())
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

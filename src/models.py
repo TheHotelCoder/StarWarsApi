@@ -26,7 +26,7 @@ class User(db.Model, BaseModel):
     is_logged= db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.name
 
     def serialize(self):
         return {
@@ -84,17 +84,17 @@ class People(db.Model, BaseModel):
             "description":self.description
         }
 
-def db_post(self):        
-    db.session.add(self)
-    db.session.commit()
+    def db_post(self):        
+        db.session.add(self)
+        db.session.commit()
     
-def set_with_json(self,json):
-    self.name = json["name"]
-    self.eye_color = json["eye_color"]
-    self.skin_color = json["skin_color"]
-    self.gender = json["gender"]
-    self.height = json["height"]
-    self.description = json["description"]
+    def set_with_json(self,json):
+        self.name = json["name"]
+        self.eye_color = json["eye_color"]
+        self.skin_color = json["skin_color"]
+        self.gender = json["gender"]
+        self.height = json["height"]
+        self.description = json["description"]
 
 # class Favorites(db.Model):
 #     __tablename__ = 'favorite_character'
