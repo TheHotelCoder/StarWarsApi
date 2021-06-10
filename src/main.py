@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Planets,People
+from models import db, User, Planets, People
 #from models import Person
 
 app = Flask(__name__)
@@ -21,21 +21,51 @@ CORS(app)
 setup_admin(app)
 
 # Handle/serialize errors like a JSON object
-@app.route("/people", methods=['GET',])
-def all_people():
+
+@app.route("/people",methods=['GET'])
+def get_all_people():
     people = People.get_all()
     people_dic = []
     for person in people :
         people_dic.append(person.serialize())
     return jsonify(people_dic)
 
-@app.route("/people/<int:people_id>", methods=['GET',])
-def all_people():
+@app.route("/people",methods=['POST'])
+def create_person ():
     json = request.get_json()
     people = People()
     people.set_with_json(json)
     people.db_post()
     return jsonify(people.serialize())
+
+@app.route("/people/<int:person_id>", methods=['GET'])
+def person_by_id(person_id):
+    people = People.get__by_id(person_id)
+    people_serialized = people.serialized()
+    return jsonify(people_serialized)
+
+
+@app.route("/planets", methods=["GET"])
+def get_all_planets():
+    planets = Planets.get_all()
+    planets_dic = []
+    for planet in planets :
+        planets_dic.append(planet.serialize())
+    return jsonify(planets_dic)
+
+@app.route("/planets",methods=['POST'])
+def create_planet():
+    json = request.get_json()
+    planets = Planets()
+    planets.set_with_json(json)
+    planets.db_post()
+    return jsonify(planets.serialize())
+
+@app.route("/planets/<int:planet_id>", methods=['GET'])
+def planet_by_id(planet_id):
+    planet = Planets.get_by_id(planet_id)
+    planet_serialized = planet.serialized()
+    return jsonify(planet_serialized) 
 
 
 # @app.errorhandler(APIException)

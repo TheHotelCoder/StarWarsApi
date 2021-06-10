@@ -9,10 +9,14 @@ class BaseModel():
         return cls.query.all()
         
     @classmethod
-    def get_one(cls,id):
+    def get_by_id(cls,id):
         return cls.query.get(id)
+    
+    @classmethod 
+    def delete_all(cls):
+        return cls.query.delete()
 
-class User(db.Model):
+class User(db.Model, BaseModel):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
@@ -34,7 +38,7 @@ class User(db.Model):
             # do not serialize the password, its a security breach
         }
     
-class Planets(db.Model):
+class Planets(db.Model, BaseModel):
     __tablename__ = 'planets'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
@@ -56,7 +60,7 @@ class Planets(db.Model):
             # do not serialize the password, its a security breach
         }
         
-class People(db.Model):
+class People(db.Model, BaseModel):
     __tablename__ = 'people'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250))
@@ -78,9 +82,19 @@ class People(db.Model):
             "gender":self.gender,
             "height":self.height,
             "description":self.description
-            
-  
         }
+
+def db_post(self):        
+    db.session.add(self)
+    db.session.commit()
+    
+def set_with_json(self,json):
+    self.name = json["name"]
+    self.eye_color = json["eye_color"]
+    self.skin_color = json["skin_color"]
+    self.gender = json["gender"]
+    self.height = json["height"]
+    self.description = json["description"]
 
 # class Favorites(db.Model):
 #     __tablename__ = 'favorite_character'
@@ -107,18 +121,3 @@ class People(db.Model):
   
         # }
 
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     email = db.Column(db.String(120), unique=True, nullable=False)
-#     password = db.Column(db.String(80), unique=False, nullable=False)
-#     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-
-#     def __repr__(self):
-#         return '<User %r>' % self.username
-
-#     def serialize(self):
-#         return {
-#             "id": self.id,
-#             "email": self.email,
-#             do not serialize the password, its a security breach
-#         }
